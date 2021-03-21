@@ -67,3 +67,11 @@ Insert into Friend
 					Where F1.ID1=F3.ID1 and F2.ID2=F3.ID2)
 	order by F1.ID1, F2.ID2
 
+## solution for sqllite with except
+
+insert into friend
+select f1.id1, f2.id2
+from friend f1 join friend f2 on f1.id2 = f2.id1
+where f1.id1 <> f2.id2
+except
+select * from friend;
