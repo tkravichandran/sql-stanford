@@ -144,6 +144,16 @@ Having avg(stars) = (Select MAX(avg_stars)
 							From Movie join Rating using(mID)
                             group by title) as G);
 
+## best sol with 2 select statements
+select title, avg(stars) avg_rating
+from Rating join Movie using (mID)
+group by title
+having avg_rating = (select avg(stars) as avg_rating
+					from Rating
+                    group by mID
+                    order by avg_rating
+                    DESC LIMIT 1);
+
                     
 # Find the movie(s) with the lowest average rating. Return the movie title(s) and average rating. 
 # (Hint: This query may be more difficult to write in SQLite than other systems; 
@@ -158,6 +168,14 @@ Having avg(stars) = (Select MIN(avg_stars)
 							From Movie join Rating using(mID)
                             group by title) as G);
 
+## best sol
+select title, avg(stars) as avg_rating
+from Rating join Movie using (mID)
+group by title
+having avg_rating =	(select avg(stars) as avg_rating
+					from Rating
+					group by  mID
+					order by avg_rating Asc LIMIT 1);
 
 # For each director, return the director's name together with the title(s) of the movie(s) 
 # they directed that received the highest rating among all of their movies, and the value of that rating. 
@@ -175,7 +193,17 @@ where not exists (select *
                 where A1.director = A2.director and A1.stars<A2.stars)
 order by director;
 
-# someone elses answer
+## new solution using join (probably faster)
+select distinct director, title, stars
+from Movie join Rating using (mID)
+join (select director, max(stars) as mx_stars
+	from Rating join Movie using (mID)
+    where director is not NULL
+	group by director) as G using (director)
+where stars=mx_stars
+order by director;
+
+# someone elses answer ( soen't work!
 
 SELECT m.director, m.title, max(ra.stars)
 FROM Movie m

@@ -12,7 +12,7 @@ where director='Steven Spielberg';
 
 select R.mID, year,stars
 from Movie M, Rating R 
-where R.mID=M.mID and stars>=4
+where R.mID=M.mID and stars>=4 # does an inner join
 order by year;
 
 ## using where
@@ -43,6 +43,10 @@ where mID not in (select mID from Rating);
 Select title
 from Movie M
 where not exists (select * from Rating R where M.mID=R.mID);
+
+select title
+from Movie M left join Rating R using (mID)
+where rID is null;
 
 # Some reviewers didn't provide a date with their rating. Find the names of all reviewers who have ratings with a NULL value for the date.
 
@@ -124,6 +128,19 @@ from (
         ) as t1 join Reviewer using(rID) join Movie using(mID)
 where exists(select * from Rating t2
 			where t1.rID=t2.rID and t1.mID=t2.mID and t1.ratingDate>t2.ratingDate and t1.stars>t2.stars);
+
+## final answer 1
+select name, title
+from 
+	(select rID
+	from Rating
+	group by rID,mID
+	having count(mID)=2) as G 
+join Rating R1 using (rID)
+join Rating R2  using (rID) 
+join Reviewer Re using (rID)
+join Movie M on R1.mID=M.mID#using (R1.mID=M.mID)## (mID)
+where R1.mID=R2.mID and R1.stars > R2.stars and R1.ratingDate > R2.ratingDate;
             
 # For each movie that has at least one rating, 
 # find the highest number of stars that movie received. 

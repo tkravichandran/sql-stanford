@@ -1,4 +1,5 @@
 DROP DATABASE IF EXISTS `sql_stanford_movie`;
+DROP DATABASE IF EXISTS `sql_stanford`;
 CREATE DATABASE `sql_stanford_movie`; 
 USE `sql_stanford_movie`;
 
@@ -48,4 +49,7 @@ insert into Rating values(206, 107, 3, '2011-01-15');
 insert into Rating values(206, 106, 5, '2011-01-19');
 insert into Rating values(207, 107, 5, '2011-01-20');
 insert into Rating values(208, 104, 3, '2011-01-02');
+
+# adding these for conducting tests
+#insert into Rating values(209, 101, 3, '2011-01-02');
 
